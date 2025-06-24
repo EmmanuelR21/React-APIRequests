@@ -29,12 +29,25 @@ const App = () => {
     event.preventDefault();
     setSearchTerm(event.target[0].value);
   }
+  function sortGifs(event) {
+    console.log(event.target.value);
+    let newArr = [];
+    if (event.target.value !== "default") {
+      newArr = gifs.sort((a, b) => {
+        a = new Date(a.import_datetime);
+        b = new Date(b.import_datetime);
+        return event.target.value === "newest" ? b - a : a - b;
+      });
+    }
+
+    setGifs([...newArr]);
+  }
 
   useEffect(() => {
     if (searchTerm === "") {
       fetchData();
     } else {
-      fetchBasedOnSearch();
+      // fetchBasedOnSearch();
     }
   }, [searchTerm]);
 
@@ -45,6 +58,11 @@ const App = () => {
         <input type="text" />
         <button type="submit">Search</button>
       </form>
+      <select name="sort" id="sort" onChange={sortGifs}>
+        <option defaultValue="default">--Sort--</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+      </select>
       <div>
         {gifs.map((gifObject) => (
           <div className="gif-card">
